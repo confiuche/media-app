@@ -1,0 +1,5 @@
+get
+put: update
+post
+patch: update
+delete
