@@ -158,7 +158,15 @@ export const profilePhotoUploadCtrl = async(req, res) =>{
             })
         }
 
-        // console.log(req.file);
+        //check if user is blocked
+        if(userProfileToBeUpdated.isBlocked){
+            res.json({
+                status:"error",
+                message:"Access denied because your account is presently blocked"
+            })
+        }
+
+        console.log(req.file);
         if(req.file){
             await User.findByIdAndUpdate(req.userAuth,{
                 $set:{
