@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema(
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category",
-        required:[true,"Category of the [post is required"],
+        required:[true,"Category of the post is required"],
     },
     numView:[
         {
