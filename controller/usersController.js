@@ -98,12 +98,13 @@ export const profileController = async(req,res)=>{
     //console.log(req.headers);
     try{
         const token = obtainTokenFromHeader(req);
+        //console.log(token);
         //console.log(req.userAuth);
         const foundUser = await User.findById(userAuth);
         if(!foundUser){
         return res.json({
             status:"error",
-            data:"No user associated with that id",
+            message:"No user associated with that id",
     })
 }
 
@@ -160,7 +161,7 @@ export const profilePhotoUploadCtrl = async(req, res) =>{
 
         //check if user is blocked
         if(userProfileToBeUpdated.isBlocked){
-            res.json({
+            return res.json({
                 status:"error",
                 message:"Access denied because your account is presently blocked"
             })
