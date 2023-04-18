@@ -194,12 +194,43 @@ export const profilePhotoUploadCtrl = async(req, res) =>{
 
 //User to follow
 export const userToFollowController = async (req, res) =>{
-    
+
     try {
+//find user to follow
+const userToFollow = await User.findById(req.params.id);
+//console.log(userToFollow);
+
+//find user who is following
+const userwhoisfollowing = await User.findById(req.userAuth);
+//console.log(userwhoisfollowing);
+
+if(userToFollow && userwhoisfollowing){
+    const userAlreadyfollowed = userToFollow.followers.find((follower)=>follower.toString() === userwhoisfollowing._id.toString())
+  
+    //check if the condition is true
+    if(userAlreadyfollowed){
+        return res.json({
+            status:"error",
+            message:"You have previously following this user"
+        });
+    }else{
+        //push user that followed to the user followers array
+        userToFollow.followers.push(userwhoisfollowing._id)
+        //push that is following
+        userwhoisfollowing.following.push(userToFollow._id)
+
+        await userToFollow.save();
+        await userwhoisfollowing.save();
+
         res.json({
             status:"success",
-            data:"You have successfully following this user"
+            data:`You have successfully following this user ${userToFollow.firstname}`
         })
+    }
+
+}
+
+        
     } catch (error) {
         res.json(error.message)
     }
