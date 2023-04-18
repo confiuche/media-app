@@ -224,7 +224,7 @@ if(userToFollow && userwhoisfollowing){
 
         res.json({
             status:"success",
-            data:`You have successfully following this user ${userToFollow.firstname}`
+            data:`You have successfully followed this user ${userToFollow.firstname}`
         })
     }
 
