@@ -189,3 +189,19 @@ export const profilePhotoUploadCtrl = async(req, res) =>{
         res.json(error.message)
     }
 }
+
+
+
+//User to follow
+export const userToFollowController = async (req, res) =>{
+    
+    try {
+        res.json({
+            status:"success",
+            data:"You have successfully following this user"
+        })
+    } catch (error) {
+        res.json(error.message)
+    }
+
+}
