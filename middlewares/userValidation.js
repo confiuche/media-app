@@ -1,5 +1,5 @@
-import joi from "joi"
-import User from "../model/userModel.js"
+import joi from 'joi'
+import User from '../model/userModel.js'
 
 export const validateUser = async(req,res,next)=>{
 const Schema = joi.object({
