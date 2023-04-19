@@ -13,7 +13,7 @@ export const createUserController = async(req,res)=>{
         //check if user has been registered before
         const foundUser = await User.findOne({email});
             if(foundUser){
-                res.json({
+                return res.json({
                     status:"error",
                     message:"User with that email already exists",
                 })
@@ -32,11 +32,8 @@ export const createUserController = async(req,res)=>{
            res.json({ 
             status:"success",
             data:user
-    })
+    });
 }
-
-
-
     } catch(error){
         res.json(error.message);
     }   
@@ -92,31 +89,32 @@ export const userLoginCtrl = async (req,res)=>{
 }
 
 // profile
-export const profileController = async(req,res)=>{
-    const userid = req.params.id;
+export const profileController = async(req, res) => {
+    //const userid = req.params.id;
     //console.log(userid);
     //console.log(req.headers);
     try{
-        const token = obtainTokenFromHeader(req);
+        const token = obtainTokenFromHeader(req)
         //console.log(token);
         //console.log(req.userAuth);
-        const foundUser = await User.findById(userAuth);
+        const foundUser = await User.findById(req.userAuth);
         if(!foundUser){
         return res.json({
             status:"error",
             message:"No user associated with that id",
-    })
+    });
+
 }
 
-           res.json({
+            res.json({
             status:"success",
-            data:foundUser
-           })
+            data:foundUser,
+           });
 
     } catch(error){
         res.json(error.message);
     }   
-}
+};
 
 
 //update users
