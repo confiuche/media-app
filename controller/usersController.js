@@ -234,3 +234,19 @@ if(userToFollow && userwhoisfollowing){
     }
 
 }
+
+
+//unfollowing controller
+export const unFollowerController = async (req,res)=>{
+    try {
+        res.json({
+            status:"success",
+            data:"You have successfully unfollow this user"
+        })
+    } catch (error) {
+        res.json(error.message)
+    }
+}
+
+
+
