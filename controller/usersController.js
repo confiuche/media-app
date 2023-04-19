@@ -239,14 +239,58 @@ if(userToFollow && userwhoisfollowing){
 //unfollowing controller
 export const unFollowerController = async (req,res)=>{
     try {
-        res.json({
-            status:"success",
-            data:"You have successfully unfollow this user"
-        })
+
+        //get the user to unfollow
+        const userToUnfollow = await User.findById(req.params.id)
+        //console.log(userToUnfollow._id);
+
+        //get the id of the user that want to unfollow another
+        const userthatwanttounfollow = await User.findById(req.userAuth);
+
+        //check if user to unfollow and user that want to unfollow another user is valid
+        if(userToUnfollow && userthatwanttounfollow){
+            //check if user to unfollow is already in the user follower array
+
+            const isUserAlreadyUnfollow = userToUnfollow.followers.find(
+                (follower) => 
+                follower.toString() === userthatwanttounfollow._id.toString());
+            //console.log(isUserAlreadyUnfollow);
+
+            if(!isUserAlreadyUnfollow){
+                res.json({
+                    status:"error",
+                    message:"You have followed this user"
+                });
+            }else{
+                //remove the user who unfollow from the follower's array
+                userToUnfollow.followers = userToUnfollow.followers.filter(
+                    (follower) => 
+                    follower.toString() !== userthatwanttounfollow._id.toString()
+                    );
+                //save
+                await userToUnfollow.save();
+
+                //remove user to be unfollowed from the user who is following
+                userthatwanttounfollow.following = 
+                userthatwanttounfollow.following.filter(
+                    (following) =>
+                following.toString() !== userToUnfollow._id.toString()
+                );
+                //save
+                await userthatwanttounfollow.save()
+
+                res.json({
+                    status:"success",
+                    data:"You have successfully unfollow this user"
+                });
+            }
+
+        }
+      
     } catch (error) {
         res.json(error.message)
     }
-}
+};
 
 
 
