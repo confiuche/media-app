@@ -376,3 +376,62 @@ export const unblockedUserController = async (req, res) => {
       res.json(error.message);
     }
   };
+
+
+  //admin block user
+export const adminBlockUserCtrl = async (req, res) => {
+    try {
+      //find the id of the users to be blocked
+      const userToBeBlocked = await User.findById(req.params.id);
+      if (!userToBeBlocked) {
+        return res.json({
+          status: "error",
+          message: "User not found",
+        });
+      }
+  
+      const adminUser = await User.findById(req.userAuth);
+  
+      //change the isblocked to true
+      userToBeBlocked.isBlocked = true;
+      //save
+      await userToBeBlocked.save();
+      res.json({
+        status: "success",
+        data: `${adminUser.firstname}, You have blocked this user successfull`,
+      });
+    } catch (error) {
+      res.json(error.message);
+    }
+  };
+  
+  //admin to unblocked the user
+  
+  export const adminUnBlockUserCtrl = async (req, res) => {
+    try {
+      //get the id of the user to be unblocked
+      const userToBeUnBlockedByAdmin = await User.findById(req.params.id);
+      //check if user is found
+      if (!userToBeUnBlockedByAdmin) {
+        return res.json({
+          status: "error",
+          message: "User not found",
+        });
+      }
+      if (!userToBeUnBlockedByAdmin.isBlocked) {
+        return res.json({
+          status: "error",
+          message: "You have not blocked this user",
+        });
+      }
+      userToBeUnBlockedByAdmin.isBlocked = false;
+      userToBeUnBlockedByAdmin.save();
+  
+      res.json({
+        status: "success",
+        data: "You have successfully unblocked this user",
+      });
+    } catch (error) {
+      res.json(error.message);
+    }
+  };
