@@ -1,9 +1,11 @@
 import express from 'express'
 import multer from 'multer';
 import storage from '../config/cloudinary.js'
-import { blockUserController, createUserController, deleteUsersController, displayAllController, profileController, profilePhotoUploadCtrl, unFollowerController, unblockedUserController, updateUserController, userLoginCtrl, userToFollowController } from '../controller/usersController.js';
+import { adminBlockUserCtrl, adminUnBlockUserCtrl, blockUserController, createUserController, deleteUsersController, displayAllController, profileController, profilePhotoUploadCtrl, unFollowerController, unblockedUserController, updateUserController, userLoginCtrl, userToFollowController } from '../controller/usersController.js';
 import { isLogin } from '../middlewares/isLogin.js';
 import { validateUser } from '../middlewares/userValidation.js';
+import { isAdmin } from '../middlewares/isAdmin.js';
+
 
 
 const userRoutes = express.Router();
@@ -28,10 +30,14 @@ userRoutes.post("/profile-image",isLogin,upload.single("profile"),profilePhotoUp
 userRoutes.get("/following/:id",isLogin,userToFollowController);
 //unfollow user
 userRoutes.get("/unfollowing/:id",isLogin,unFollowerController);
-//blocke user
+//block user
 userRoutes.get("/block/:id",isLogin,blockUserController);
 //unblocked user
 userRoutes.get("/unblock/:id",isLogin,unblockedUserController);
+//admin blocked user
+userRoutes.put("/admin-block-user/:id",isLogin,isAdmin,adminBlockUserCtrl);
+//admin unblocked user
+userRoutes.put("/admin-unblock-user/:id",isLogin,isAdmin,adminUnBlockUserCtrl);
 
 
 export default userRoutes;
