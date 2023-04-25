@@ -31,3 +31,16 @@ export const createCategory = async(req,res)=>{
         res.json(error.message)
     }
 }
+
+//fetch all
+export const list = async(req,res)=>{
+    try {
+        const categoryList = await Category.find({})
+        res.json({
+            status:"success",
+            data:categoryList
+        })
+    } catch (error) {
+        res.json(error.message)
+    }
+}
