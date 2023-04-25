@@ -94,7 +94,7 @@ export const profileController = async(req, res) => {
     //console.log(userid);
     //console.log(req.headers);
     try{
-        const token = obtainTokenFromHeader(req)
+        const token = obtainTokenFromHeader(req);
         //console.log(token);
         //console.log(req.userAuth);
         const foundUser = await User.findById(req.userAuth);
