@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import { database } from "./config/dBconnect.js";
+import categoryRoutes from "./routes/categoryRoute.js";
 
 dotenv.config();
 database();
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 8080;
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/posts", postRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 
 app.listen(PORT, console.log(`App started at ${PORT}`));
