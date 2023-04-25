@@ -44,3 +44,23 @@ export const list = async(req,res)=>{
         res.json(error.message)
     }
 }
+
+
+//fetch a particular category
+export const displaySingleCategory = async(req,res) =>{
+    try {
+        const foundCate = await Category.findById(req.params.id);
+        if(!foundCate){
+            return res.json({
+                status:"error",
+                message:"No such category"
+            })
+        }
+        res.json({
+            status:"success",
+            data:foundCate
+        })
+    } catch (error) {
+        res.json(error.message)
+    }
+}
