@@ -80,5 +80,37 @@ const userSchema = new mongoose.Schema({
         toJSON:{virtuals:true}
     }
 );
+
+//get fullname
+userSchema.virtual("fullname").get(function(){
+    return `${this.firstname} ${this.lastname}`
+})
+
+//count post show the user how post he/she has posted
+userSchema.virtual("postCounts").get(function(){
+    return this.posts.length;
+})
+
+//followers count
+userSchema.virtual("followercount").get(function(){
+    return this.followers.length;
+})
+
+//following count
+userSchema.virtual("followingcount").get(function(){
+    return this.following.length;
+})
+
+//no of blocked user
+userSchema.virtual("blockuserCount").get(function(){
+    return this.blocked.length;
+})
+
+//initial incase if the user dose not a profile photo
+userSchema.virtual("initials").get(function(){
+    return `${this.firstname[0]}${this.lastname[0]}`
+})
+
+
 const User = mongoose.model("User",userSchema);
 export default User;
