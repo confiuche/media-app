@@ -33,3 +33,17 @@ await postOwner.save()
         res.json(error.message);
     }   
 }
+
+
+//fetch all posts by admin
+export const fetchAllPostByAdmin = async(req,res)=>{
+    try {
+        res.json({
+            status:"success",
+            data:"Display all post"
+        })
+
+    } catch (error) {
+        res.json(error.message)
+    }
+}
