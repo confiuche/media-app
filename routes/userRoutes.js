@@ -21,7 +21,7 @@ userRoutes.get("",isLogin,displayAllController);
 //profile
 userRoutes.get("/profile",isLogin,profileController);
 //update users
-userRoutes.put("/:id", updateUserController);
+userRoutes.put("",isLogin, updateUserController);
 //delete users
 userRoutes.delete("/:id", deleteUsersController);
 //upload profile
