@@ -119,11 +119,20 @@ export const profileController = async(req, res) => {
 
 //update users
 export const updateUserController = async(req,res)=>{
-    const userid = req.params.id;
+    //const userid = req.params.id;
     try{
+      console.log()
+      const updateUser = await User.findByIdAndUpdate(req.userAuth,{
+        
+        $set:{
+          email:req.body.email
+        }
+      },{
+        new:true
+      })
         res.json({
             status:"success",
-            data:"User account updated successfully "
+            data:updateUser
     })
     } catch(error){
         res.json(error.message);
