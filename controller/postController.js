@@ -152,3 +152,22 @@ export const deletPost = async (req, res) => {
 
 
 
+// deletepost by admin
+export const deletPostByAdmin = async (req, res) => {
+    const post = await Post.findById(req.params.id);
+    try {
+      if (!post) {
+        return res.json({
+          status: "error",
+          message: "post not found",
+        });
+      }
+      await post.remove();
+      res.json({
+        status: "success",
+        data: "post deleted successfully",
+      });
+    } catch (error) {
+      res.json(error.message);
+    }
+  };
