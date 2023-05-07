@@ -123,3 +123,32 @@ export const getSinglePost = async (req, res) => {
     }
   };
   
+
+
+  //delete post
+export const deletPost = async (req, res) => {
+    //find post
+    try{
+    const postId  = req.params;
+    const loggedUser = req.userAuth;
+  
+    const post = await Post.findOne({_id:mongoose.Types.ObjectId(postId), user:loggedUser})
+  
+  if(!post){
+    return res.json({
+      status: "error",
+      message: "Post not found",
+    })
+  }
+  await post.delete();
+  res.json({
+    status:"success",
+    message:"post deleted successfully"
+  })
+  }catch (error) {
+      res.json(error.message);
+    }
+  }
+
+
+
