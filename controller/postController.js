@@ -102,3 +102,24 @@ export const fetchPostByUser = async (req, res) => {
     }
     
 }
+
+
+//get single post
+export const getSinglePost = async (req, res) => {
+    try {
+      const singlepost = await Post.findById(req.params.id);
+      if (!singlepost) {
+        res.json({
+          status: "error",
+          message: "post not found",
+        });
+      }
+      res.json({
+        status: "success",
+        data: singlepost,
+      });
+    } catch (error) {
+      res.json(error.message);
+    }
+  };
+  
