@@ -83,3 +83,22 @@ export const list =async(req,res)=>{
         res.json(error.message)
     }
 }
+
+
+//get post associate to a particular users
+//fetch post created by a particular user
+export const fetchPostByUser = async (req, res) => {
+    const userPost = await Post.find({user:req.params.id})
+    
+    
+    try {
+        return res.json({
+            status:"success",
+            data:userPost
+        })
+    
+    }catch (error) {
+        res.json(error.message)
+    }
+    
+}
