@@ -92,9 +92,9 @@ export const fetchPostByUser = async (req, res) => {
     
     
     try {
-        return res.json({
-            status:"success",
-            data:userPost
+        res.json({
+        status:"success",
+        data:userPost
         })
     
     }catch (error) {
