@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPostController, fetchAllPostByAdmin, fetchPostByUser, list } from '../controller/postController.js';
+import { createPostController, fetchAllPostByAdmin, fetchPostByUser, getSinglePost, list } from '../controller/postController.js';
 import { isLogin } from "../middlewares/isLogin.js"
 import { isAdmin } from '../middlewares/isAdmin.js'
 
@@ -13,6 +13,8 @@ postRoutes.get("/list-post-admin",isLogin,isAdmin,fetchAllPostByAdmin)
 postRoutes.get("/list-post",isLogin,list)
 //fetch all post by user
 postRoutes.get("/user/:id",isLogin,fetchPostByUser)
+//get single post
+postRoutes.get("/:id",isLogin,getSinglePost);
 
 
 export default postRoutes;
