@@ -17,7 +17,8 @@ export const createPostController = async(req,res)=>{
             title,
             description,
             category,
-            user:postOwner._id
+            user:postOwner._id,
+            photo: req?.file?.path,
         })
 
         res.json({
@@ -124,22 +125,33 @@ export const getSinglePost = async (req, res) => {
   };
   
 
-
   //delete post
-export const deletPost = async (req, res) => {
+  export const deletPost = async (req, res) => {
     //find post
     try{
-    const postId  = req.params;
-    const loggedUser = req.userAuth;
+    const postId  = req.params.id;
+    // const loggedUser = req.userAuth;
+    const post = await Post.findById(postId)
+
+    const userDeletePost = post.user.toString() === req.userAuth.toString()
   
-    const post = await Post.findOne({_id:mongoose.Types.ObjectId(postId), user:loggedUser})
-  
+    // const post = await Post.findOne({_id:mongoose.Types.ObjectId(postId), user:loggedUser})
+  // 644a69efb37ad08258fd5e3c
   if(!post){
     return res.json({
       status: "error",
       message: "Post not found",
     })
   }
+
+  if(!userDeletePost){
+    return res.json({
+      status:"error",
+      message:"you are Unable to delete this post"
+    })
+  }
+
+
   await post.delete();
   res.json({
     status:"success",
@@ -152,7 +164,36 @@ export const deletPost = async (req, res) => {
 
 
 
-// deletepost by admin
+
+
+//   //delete post
+// export const deletPost = async (req, res) => {
+//     //find post
+//     try{
+//     const postId  = req.params;
+//     const loggedUser = req.userAuth;
+  
+//     const post = await Post.findOne({_id:mongoose.Types.ObjectId(postId), user:loggedUser})
+  
+//   if(!post){
+//     return res.json({
+//       status: "error",
+//       message: "Post not found",
+//     })
+//   }
+//   await post.delete();
+//   res.json({
+//     status:"success",
+//     message:"post deleted successfully"
+//   })
+//   }catch (error) {
+//       res.json(error.message);
+//     }
+//   }
+
+
+
+// delete post by admin
 export const deletPostByAdmin = async (req, res) => {
     const post = await Post.findById(req.params.id);
     try {
