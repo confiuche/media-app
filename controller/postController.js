@@ -110,11 +110,12 @@ export const getSinglePost = async (req, res) => {
     try {
       const singlepost = await Post.findById(req.params.id);
       if (!singlepost) {
-        res.json({
+        return res.json({
           status: "error",
           message: "post not found",
         });
       }
+
       res.json({
         status: "success",
         data: singlepost,
@@ -152,11 +153,13 @@ export const getSinglePost = async (req, res) => {
   }
 
 
+  if(userDeletePost){
   await post.delete();
   res.json({
     status:"success",
     message:"post deleted successfully"
   })
+}
   }catch (error) {
       res.json(error.message);
     }
@@ -212,3 +215,177 @@ export const deletPostByAdmin = async (req, res) => {
       res.json(error.message);
     }
   };
+
+
+
+  //update post
+export const updatePostController = async (req, res) => {
+  const { title, description, category } = req.body;
+  try {
+    const postId = req.params.id;
+    //obtain the post
+    const post = await Post.findById(postId);
+    //check the post exists
+    if (!post) {
+      return res.json({
+        status: "error",
+        message: "Sorry post not found!"
+      });
+    }
+
+    //check if the post belongs to the cureent user
+    const isPostBelongToCurrentUser =
+      post.user.toString() === req.userAuth.toString();
+    if (!isPostBelongToCurrentUser) {
+      return res.json({
+        status: "error",
+        message: "Access denied",
+      });
+    }
+    //now updaste the post
+
+    const postUpdate = await Post.findByIdAndUpdate(
+      postId,
+      {
+        title,
+        description,
+        category,
+        photo: req?.file?.path,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({
+      status: "success",
+      data: postUpdate,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+
+
+//likes and dislikes toggles
+
+export const likesToggleCtr = async (req, res) => {
+  try {
+    //get post
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    //check if the post exists
+    if (!post) {
+      return res.json({
+        status: "error",
+        message: "post not found",
+      });
+    }
+    //check if the post belongs to the user
+
+    const isPostBelongToCurrentUser =
+      post.user.toString() === req.userAuth.toString();
+
+    if (isPostBelongToCurrentUser) {
+      return res.json({
+        status: "error",
+        message: "You cannot like your own post",
+      });
+    }
+    //check if the post has been liked by the same
+    const isPostLike = post.likes.includes(req.userAuth);
+    if (isPostLike) {
+      post.likes = post.likes.filter(
+        (like) => like.toString() !== req.userAuth.toString()
+      );
+      await post.save();
+    } else {
+      post.likes.push(req.userAuth);
+      await post.save();
+    }
+    res.json({
+      status: "sucess",
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//dislikes
+export const disLikesToggle = async (req, res) => {
+  try {
+    //get the post
+
+    const postId = req.params.id;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.json({
+        status: "error",
+        message: "post not found",
+      });
+    }
+    //check if the post belong to the user
+    const isPostBelongToCurrentUser =
+      post.user.toString() === req.userAuth.toString();
+    if (isPostBelongToCurrentUser) {
+      return res.json({
+        status: "error",
+        message: "You can't dislike your own post",
+      });
+    }
+
+    const isPostDislike = post.dislikes.includes(req.userAuth);
+    if (isPostDislike) {
+      post.dislikes = post.dislikes.filter(
+        (dislike) => dislike.toString() !== req.userAuth.toString()
+      );
+
+      await post.save();
+    } else {
+      post.dislikes.push(req.userAuth);
+      await post.save();
+    }
+
+    res.json({
+      status: "success",
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
+
+//viwecount
+export const viewCount = async (req, res) => {
+  try {
+    //get the post
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    if (!postId) {
+      return res.json({
+        status: "error",
+        message: "Post not found",
+      });
+    }
+
+    //check if the particular includes the logged user id
+    const postView = post.numViews.includes(req.userAuth);
+    if (postView) {
+      return res.json({
+        status: "error",
+        message: "You have already view this post",
+      });
+    }
+    post.numViews.push(req.userAuth);
+    await post.save();
+
+    res.json({
+      status: "success",
+      data: post,
+    });
+  } catch (error) {
+    res.json(error.message);
+  }
+};
