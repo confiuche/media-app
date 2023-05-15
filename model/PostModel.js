@@ -55,6 +55,26 @@ const postSchema = new mongoose.Schema(
     toJSON:{virtuals:true}
 }
 );
+
+
+//get likes count
+postSchema.virtual("like").get(function(){
+    return this.likes.length
+})
+
+
+//get dislikes count
+postSchema.virtual("dislike").get(function(){
+    return this.dislikes.length
+})
+
+
+//get view count
+postSchema.virtual("viewcount").get(function(){
+    return this.numView.length
+})
+
+
 const Post = mongoose.model("Post",postSchema);
 
 export default Post;
