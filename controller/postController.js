@@ -371,14 +371,14 @@ export const viewCount = async (req, res) => {
     }
 
     //check if the particular includes the logged user id
-    const postView = post.numViews.includes(req.userAuth);
+    const postView = post.numView.includes(req.userAuth);
     if (postView) {
       return res.json({
         status: "error",
         message: "You have already view this post",
       });
     }
-    post.numViews.push(req.userAuth);
+    post.numView.push(req.userAuth);
     await post.save();
 
     res.json({
