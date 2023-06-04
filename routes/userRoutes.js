@@ -1,7 +1,22 @@
 import express from 'express'
 import multer from 'multer';
 import storage from '../config/cloudinary.js'
-import { adminBlockUserCtrl, adminUnBlockUserCtrl, blockUserController, createUserController, deleteUsersController, displayAllController, profileController, profilePhotoUploadCtrl, unFollowerController, unblockedUserController, updateUserController, userLoginCtrl, userToFollowController } from '../controller/usersController.js';
+import { 
+    adminBlockUserCtrl, 
+    adminUnBlockUserCtrl, 
+    blockUserController, 
+    createUserController, 
+    deleteUsersController, 
+    displayAllController, 
+    forgetPasswordCtr, 
+    profileController, 
+    profilePhotoUploadCtrl, 
+    unFollowerController, 
+    unblockedUserController, 
+    updateUserController, 
+    userLoginCtrl, 
+    userToFollowController 
+   } from '../controller/usersController.js';
 import { isLogin } from '../middlewares/isLogin.js';
 import { validateUser } from '../middlewares/userValidation.js';
 import { isAdmin } from '../middlewares/isAdmin.js';
@@ -38,6 +53,8 @@ userRoutes.get("/unblock/:id",isLogin,unblockedUserController);
 userRoutes.put("/admin-block-user/:id",isLogin,isAdmin,adminBlockUserCtrl);
 //admin unblocked user
 userRoutes.put("/admin-unblock-user/:id",isLogin,isAdmin,adminUnBlockUserCtrl);
+//forget password
+userRoutes.post("/forget-password", forgetPasswordCtr)
 
 
 export default userRoutes;
