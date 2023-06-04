@@ -2,21 +2,18 @@ import User from "../model/userModel.js";
 import bcrypt from 'bcrypt';
 import generateToken from "../utils/generateToken.js";
 import { obtainTokenFromHeader } from "../utils/obtaintokenfromheader.js";
-
+import AppError from "../utils/AppErr.js"
 
 
 
 //create users
-export const createUserController = async(req,res)=>{
+export const createUserController = async(req, res, next)=>{
     const {firstname,lastname,profilephoto,email,password} = req.body;
     try{
         //check if user has been registered before
         const foundUser = await User.findOne({email});
             if(foundUser){
-                return res.json({
-                    status:"error",
-                    message:"User with that email already exists",
-                })
+                return next(AppError("User with that email already exists", 409))
             }else{
         //hash password
         const salt = await bcrypt.genSalt(10);
@@ -40,37 +37,20 @@ export const createUserController = async(req,res)=>{
 }
 
 
-// display all users
-export const displayAllController = async(req,res)=>{
-    try{
-        const users = await User.find({});
-        res.json({
-            status:"success",
-            data:users
-    })
-    } catch(error){
-        res.json(error.message);
-    }
-}
-
 //login user
-export const userLoginCtrl = async (req,res)=>{
+export const userLoginCtrl = async (req,res,next)=>{
     const {email,password} = req.body;
     try {
         //get email
         const isUserFound = await User.findOne({email});
         if(!isUserFound){
-            return res.json({
-                message:"Wrong login credential",
-            })
+            return next(AppError("Wrong login credential"))
         }
 
         //get password
         const isPasswordFound = await bcrypt.compare(password,isUserFound.password);
         if(!isPasswordFound){
-            return res.json({
-                message:"Wrong login credential"
-            })
+          return next(AppError("Wrong login credential"))
 
         }
         res.json({
@@ -84,12 +64,12 @@ export const userLoginCtrl = async (req,res)=>{
         })
 
     }catch(error){
-        res.json(error.message);
+        next(AppError(error.message))
     }
 }
 
 // profile
-export const profileController = async(req, res) => {
+export const profileController = async(req, res,next) => {
     //const userid = req.params.id;
     //console.log(userid);
     //console.log(req.headers);
@@ -99,10 +79,7 @@ export const profileController = async(req, res) => {
         //console.log(req.userAuth);
         const foundUser = await User.findById(req.userAuth);
         if(!foundUser){
-        return res.json({
-            status:"error",
-            message:"No user associated with that id",
-    });
+        return next(AppError("No user associated with that id", 404))
 
 }
 
@@ -112,9 +89,24 @@ export const profileController = async(req, res) => {
            });
 
     } catch(error){
-        res.json(error.message);
+        next(AppError(error.message))
     }   
 };
+
+
+// display all users
+export const displayAllController = async(req,res)=>{
+  try{
+      const users = await User.find({});
+      res.json({
+          status:"success",
+          data:users
+  })
+  } catch(error){
+      next(AppError(error.message));
+  }
+}
+
 
 
 //update users
@@ -135,7 +127,7 @@ export const updateUserController = async(req,res)=>{
             data:updateUser
     })
     } catch(error){
-        res.json(error.message);
+        next(AppError(error.message))
     }
 }
 
@@ -149,13 +141,13 @@ export const deleteUsersController = async(req,res)=>{
             data:"User account deleted successfully"
     })
     } catch(error){
-        res.json(error.message);
+        next(AppError(error.message))
     }   
 }
 
 
 //upload profile photo
-export const profilePhotoUploadCtrl = async(req, res) =>{
+export const profilePhotoUploadCtrl = async(req, res, next) =>{
     try {
         //find the user whose is uploading profile
         const userProfileToBeUpdated = await User.findById(req.userAuth);
