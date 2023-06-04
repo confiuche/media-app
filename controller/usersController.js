@@ -478,4 +478,40 @@ export const adminBlockUserCtrl = async (req, res) => {
   }
 
 
-  
+  //reset password
+  export const resetPasswordCtr = async(req, res, next) => {
+    try {
+      const {resetToken,password} =req.body;
+      //find the user with token
+      const user = await User.findOne({
+        resetToken,
+        reseTokenExpiration: {$gt: Date.now()},
+      })
+
+      if(!user){
+        return next(AppError('Invalid or the link expired', 400))
+      }
+
+      //hash
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(password,salt);
+
+      //Update user obj
+      user.password = hashPassword;
+      user.resetToken = undefined;
+      user.reseTokenExpiration = undefined
+
+      await user.save();
+
+      res.status(200).json({
+        status:"success",
+        message:"Your password reset successfully"
+      });
+
+      const html = `<h3>success</h3><br/> <p>Your password changed successfully</p>`
+      await sendEmail(user.email,'Password Message', html);
+
+    } catch (error) {
+      next(AppError(error.message))
+    }
+  }
