@@ -9,6 +9,7 @@ import {
     deleteUsersController, 
     displayAllController, 
     forgetPasswordCtr, 
+    passwordSettingCtr, 
     profileController, 
     profilePhotoUploadCtrl, 
     resetPasswordCtr, 
@@ -58,6 +59,8 @@ userRoutes.put("/admin-unblock-user/:id",isLogin,isAdmin,adminUnBlockUserCtrl);
 userRoutes.post("/forget-password", forgetPasswordCtr)
 //reset password
 userRoutes.post("/reset-password", resetPasswordCtr)
+//password setting
+userRoutes.put("/security", isLogin, passwordSettingCtr)
 
 
 export default userRoutes;
