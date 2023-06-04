@@ -515,3 +515,47 @@ export const adminBlockUserCtrl = async (req, res) => {
       next(AppError(error.message))
     }
   }
+
+  
+
+  //password setting
+  export const passwordSettingCtr = async (req,res,next) => {
+    const {oldPassword, newPassword} = req.body;
+    try {
+      const user = await User.findById(req.userAuth)
+    
+    if(!user){
+      next(AppError("Access Denied", 403))
+    }
+  
+    //get password
+    //check if the password when logged in is equal to the password the provided
+    const isPasswordFound = await bcrypt.compare(oldPassword,user.password);
+
+      if(!isPasswordFound){
+        next(AppError("Incorrect password",403))
+      }
+      //hash the newpassword
+      const salt = await bcrypt.genSalt(10);
+      const hashPassword = await bcrypt.hash(newPassword,salt);
+      
+      //Now update the new password
+      const updatePassword = await User.findByIdAndUpdate(user._id,{
+        password: hashPassword,
+      });
+      if(!updatePassword){
+        next(AppError("Password not updated",403))
+      }
+
+    res.json({
+      status: "success",
+      data: "Password updated successfully"
+    })
+
+    const html = `<h3>success</h3><br/> <p>Your password changed successfully</p>`
+    await sendEmail(user.email,'Password Message', html);
+
+    } catch (error) {
+      next(AppError(error.message))
+    }
+  }
