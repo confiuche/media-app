@@ -11,6 +11,7 @@ import {
     forgetPasswordCtr, 
     profileController, 
     profilePhotoUploadCtrl, 
+    resetPasswordCtr, 
     unFollowerController, 
     unblockedUserController, 
     updateUserController, 
@@ -55,6 +56,8 @@ userRoutes.put("/admin-block-user/:id",isLogin,isAdmin,adminBlockUserCtrl);
 userRoutes.put("/admin-unblock-user/:id",isLogin,isAdmin,adminUnBlockUserCtrl);
 //forget password
 userRoutes.post("/forget-password", forgetPasswordCtr)
+//reset password
+userRoutes.post("/reset-password", resetPasswordCtr)
 
 
 export default userRoutes;
