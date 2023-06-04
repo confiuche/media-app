@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import generateToken from "../utils/generateToken.js";
 import { obtainTokenFromHeader } from "../utils/obtaintokenfromheader.js";
 import AppError from "../utils/AppErr.js"
+import jwt from 'jsonwebtoken'
 
 
 
@@ -436,3 +437,45 @@ export const adminBlockUserCtrl = async (req, res) => {
       res.json(error.message);
     }
   };
+
+
+  //forget password
+  export const forgetPasswordCtr = async (req, res, next) => {
+    try {
+      const {email} = req.body;
+      //check if email is valid
+      const user = await User.findOne({email});
+      if(!user){
+        return next(AppError(`user with ${email} does not exist`,404))
+      }
+
+      //generate a reset token
+      const resetToken = jwt.sign({userId: user._id}, process.env.JWT_KEY,{
+        expiresIn:'1h'
+      })
+
+      //set the  reset token and its expiration on the user obj
+
+      user.resetToken = resetToken;
+      user.reseTokenExpiration = Date.now() + 3600000;
+      
+      user.save()
+      //send password reset email
+      const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+      const html = `<h3>RESET PASSWORD</h3><br/> Below is the link to reset your password<br>This link only valid for 1 hour, please do not share with anyone<hr/><br/>click <strong><a href='${resetUrl}'>here</a></strong> to reset your password</p><p>Having any issue? kindly contact our support team</p>`
+      await sendEmail(user.email,'Reset Your Password', html);
+
+      //console.log(resetUrl);
+
+      res.status(200).json({
+        status:"success",
+        message:`Password reset sent successfully to your email ${user.email}` 
+      });
+
+    } catch (error) {
+      next(AppError(error.message))
+    } 
+  }
+
+
+  
