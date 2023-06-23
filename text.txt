@@ -3,3 +3,29 @@ put: update
 post
 patch: update
 delete
+
+PORT = 3000
+
+#PASSWORD =
+
+#DB_CONNECT = mongodb://localhost:27017/media2023-api
+
+#Database Setting
+DB_CONNECT =
+
+JWT_KEY = balabulu
+
+TOKEN_EXPIRES = 7d
+
+#Cloudinary setting
+CLOUDINARY_CLOUD_NAME =
+CLOUDINARY_API_KEY = 
+CLOUDINARY_API_SECRET =
+
+
+EMAIL_ADDRESS = 
+EMAIL_PASSWORD =
+
+
+#stripe
+STRIPE_SECRET_KEY = 
