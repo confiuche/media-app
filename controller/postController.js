@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import Post from "../model/PostModel.js";
 import User from "../model/userModel.js"
+import AppError from "../utils/AppErr.js";
 
 //create post
 export const createPostController = async(req,res)=>{
@@ -59,17 +61,18 @@ export const list =async(req,res)=>{
     const posts = await Post.find({})
     .populate("user")
     .populate("category","title")
+    .populate("comments");
 
     //check if the user is blocked by the post owner
     //that is why we user populate as to get the 'blocked' property
-    const filterpost = posts.filter((post)=>{
+    const filterpost = posts.filter((post) => {
         const blockedUser = post.user.blocked;
 
         //we check if the id of the user that is block is in 
         //the array of the user that create the post
         const isaBlocked = blockedUser.includes(req.userAuth)
 
-        return isaBlocked?null:post
+        return isaBlocked ? null : post;
 
     })
 
@@ -387,5 +390,65 @@ export const viewCount = async (req, res) => {
     });
   } catch (error) {
     res.json(error.message);
+  }
+};
+
+
+
+//list all post
+export const displayALLpost = async (req, res, next) => {
+  const { title } = req.query;
+  try {
+    let posts = Post.find({}).populate("user")
+    .populate("category","title")
+    .populate("comments");
+
+    if (title) {
+      posts = posts.find({
+        title: { $regex: title, $options: "i" },
+      });
+    }
+
+    //pagination
+    //page
+    const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
+    //limit
+    const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
+
+    //startIndex
+    const startIndex = (page - 1) * limit;
+    //endIndex
+    const endIndex = page * limit;
+    //total
+    const total = await Post.countDocuments();
+
+    posts  = posts.skip(startIndex).limit(limit)
+
+  //resut from pagination
+  const pagination = {}
+  if(endIndex < total){
+    pagination.next = {
+      page: page + 1,
+      limit
+      }
+  }
+
+if(startIndex > 0){
+  pagination.prev = {
+    page: page - 1,
+    limit
+  }
+}
+
+    const postresult = await posts;
+    res.json({
+      status: "success",
+      result:postresult.length,
+      pagination,
+      message:"Posts fetched successfully",
+      data: postresult,
+    });
+  } catch (error) {
+    next(AppError(error.message));
   }
 };
