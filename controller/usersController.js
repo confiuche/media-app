@@ -4,7 +4,10 @@ import generateToken from "../utils/generateToken.js";
 import { obtainTokenFromHeader } from "../utils/obtaintokenfromheader.js";
 import AppError from "../utils/AppErr.js"
 import jwt from 'jsonwebtoken'
+import { Stripe } from "stripe";
+import dotenv from "dotenv";
 
+dotenv.config();
 
 
 //create users
@@ -559,3 +562,52 @@ export const adminBlockUserCtrl = async (req, res) => {
       next(AppError(error.message))
     }
   }
+
+
+//Payment
+//create an instance
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+//console.log(stripe);
+const PRICE = 3600;
+const YOUR_DOMAIN = "http://localhost:3000";
+
+export const subscribeController = async(req, res) => {
+  try {
+    const { duration, description } = req.body;
+//console.log(3000);
+    //get user
+    const user = await User.findById(req.userAuth);
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: [
+        {
+          price_data:{
+            currency: "usd",
+            product_data: {
+              name: `Payment for Blue tick  subscription for ${user.firstname} ${user.lastname}`,
+              description,
+            },
+            unit_amount: 100 * Number(PRICE),
+          },
+          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+          quantity: Number(duration),
+          // price: '{{PRICE_ID}}',
+          // quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      // success_url: `${YOUR_DOMAIN}/success.html`,
+      // cancel_url: `${YOUR_DOMAIN}/cancel.html`,
+
+      success_url: `${YOUR_DOMAIN}/success`,
+      cancel_url: `${YOUR_DOMAIN}/cancel`,
+    });
+  
+    res.send({url:session.url})
+    //res.redirect(303, session.url);
+    //res.send("<h1>I Love this</h1>")
+  } catch (error) {
+    //next(AppError(error.message))
+    res.status(500).json(error.message)
+  }
+}
