@@ -13,6 +13,7 @@ import {
     profileController, 
     profilePhotoUploadCtrl, 
     resetPasswordCtr, 
+    subscribeController, 
     unFollowerController, 
     unblockedUserController, 
     updateUserController, 
@@ -61,6 +62,8 @@ userRoutes.post("/forget-password", forgetPasswordCtr)
 userRoutes.post("/reset-password", resetPasswordCtr)
 //password setting
 userRoutes.put("/security", isLogin, passwordSettingCtr)
+//payment/subscriber
+userRoutes.post("/payment", isLogin,subscribeController)
 
 
 export default userRoutes;
