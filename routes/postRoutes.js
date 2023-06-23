@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPostController, deletPost, deletPostByAdmin, disLikesToggle, fetchAllPostByAdmin, fetchPostByUser, getSinglePost, likesToggleCtr, list, updatePostController, viewCount } from '../controller/postController.js';
+import { createPostController, deletPost, deletPostByAdmin, disLikesToggle, displayALLpost, fetchAllPostByAdmin, fetchPostByUser, getSinglePost, likesToggleCtr, list, updatePostController, viewCount } from '../controller/postController.js';
 import { isLogin } from "../middlewares/isLogin.js"
 import { isAdmin } from '../middlewares/isAdmin.js'
 import multer from 'multer';
@@ -29,7 +29,9 @@ postRoutes.get("/likes/:id",isLogin,likesToggleCtr);
 //like and dislikes
 postRoutes.get("/dislikes/:id",isLogin,disLikesToggle);
 //viewcount
-postRoutes.get("/viewcount/:id",isLogin,viewCount)
+postRoutes.get("/viewcount/:id",isLogin,viewCount);
+//list all post
+postRoutes.get("/",isLogin,displayALLpost)
 
 
 export default postRoutes;
