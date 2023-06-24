@@ -5,7 +5,7 @@ import AppError from "../utils/AppErr.js";
 
 //create post
 export const createPostController = async(req,res)=>{
-    const {title,description,category}=req.body;
+    const {title,description,category} = req.body;
     try{
         //obtain the user who is creating the post
         const postOwner = await User.findById(req.userAuth)
@@ -396,6 +396,7 @@ export const viewCount = async (req, res) => {
 
 
 //list all post
+//Filtering
 export const displayALLpost = async (req, res, next) => {
   const { title } = req.query;
   try {
@@ -410,10 +411,10 @@ export const displayALLpost = async (req, res, next) => {
     }
 
     //pagination
-    //page
+    //page initialization
     const page = parseInt(req.query.page) ? parseInt(req.query.page) : 1;
-    //limit
-    const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
+    //limit initialization
+    const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 2;
 
     //startIndex
     const startIndex = (page - 1) * limit;
@@ -424,7 +425,7 @@ export const displayALLpost = async (req, res, next) => {
 
     posts  = posts.skip(startIndex).limit(limit)
 
-  //resut from pagination
+  //result from pagination
   const pagination = {}
   if(endIndex < total){
     pagination.next = {
