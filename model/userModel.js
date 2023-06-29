@@ -1,4 +1,4 @@
-import mongoose,{ Schema } from "mongoose";
+ import mongoose,{ Schema } from "mongoose";
 
 const userSchema = new mongoose.Schema({
         firstname:{
@@ -79,7 +79,36 @@ const userSchema = new mongoose.Schema({
         },
         resetTokenExpiration:{
             type:Date
-        }
+        },
+        subscription: {
+            totalAmount: {
+              type: Number,
+              default: 0.0,
+            },
+            payment_status: {
+              type: String,
+              default: "not_paid",
+            },
+            paymentMethod: {
+              type: String,
+            },
+            currency: {
+              type: String,
+            },
+            subscriptionDate: {
+              type: Date,
+            },
+            transationId: {
+              type: String,
+            },
+            expirationDate: {
+              type: Date,
+            },
+            approved: {
+              type: String,
+              default: "pending",
+            },
+          },
     },
     {
         timestamps:true,
