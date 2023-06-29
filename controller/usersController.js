@@ -595,6 +595,9 @@ export const subscribeController = async(req, res) => {
           // quantity: 1,
         },
       ],
+      metadata:{
+        userId:JSON.stringify(user?._id),
+      },
       mode: 'payment',
       // success_url: `${YOUR_DOMAIN}/success.html`,
       // cancel_url: `${YOUR_DOMAIN}/cancel.html`,
@@ -603,7 +606,7 @@ export const subscribeController = async(req, res) => {
       cancel_url: `${YOUR_DOMAIN}/cancel`,
     });
   
-    res.send({url:session.url})
+    res.send({url: session.url})
     //res.redirect(303, session.url);
     //res.send("<h1>I Love this</h1>")
   } catch (error) {
