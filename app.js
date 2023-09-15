@@ -8,6 +8,9 @@ import commentRoutes from "./routes/commentRoute.js";
 import globalErrorHandler from "./middlewares/globalErrorHandler.js";
 import { Stripe } from "stripe"
 import User from "./model/userModel.js"
+const _ = require('lodash');
+//import _ from 'lodash'
+const {initializePayment, verifyPayment} = require('./controller/usersController.js')(request);
 
 
 
@@ -17,7 +20,7 @@ database();
 const app = express();
 
 
-//webhook
+//webhook for stripe
 // server.js
 //
 // Use this sample code to handle webhook events in your integration.
@@ -110,6 +113,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), async (request, re
 
 
 
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
@@ -120,7 +124,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/comment",commentRoutes);
 
 app.get("/success", async (req, res) => {
-    res.send("<h1>Thanks your payment has been received</h1>");
+    res.send("<h1>Thanks your payment has been received</h1>")
   });
 
 app.use(globalErrorHandler);
@@ -133,3 +137,5 @@ app.listen(PORT, console.log(`App started at ${PORT}`));
 //     message: `${req.originalUrl} not found`,
 //   });
 // });
+
+

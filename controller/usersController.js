@@ -170,7 +170,7 @@ export const profilePhotoUploadCtrl = async(req, res, next) =>{
             })
         }
 
-        console.log(req.file);
+        console.log(req.file)
         if(req.file){
             await User.findByIdAndUpdate(req.userAuth,{
                 $set:{
@@ -564,7 +564,7 @@ export const adminBlockUserCtrl = async (req, res) => {
   }
 
 
-//Payment
+//Payment with stripe
 //create an instance
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 //console.log(stripe);
@@ -614,3 +614,42 @@ export const subscribeController = async(req, res) => {
     res.status(500).json(error.message)
   }
 }
+
+
+const paystack = (request) => {
+  const MySecretKey = 'sk_test_7b61c950faa6221c400d7d2135203bf51a9751d6';
+  console.log(MySecretKey);
+  //sk_test_xxxx to be replaced by your own secret key
+  const initializePayment = (form, mycallback) => {
+      const option = {
+          url : 'https://api.paystack.co/transaction/initialize',
+          headers : {
+              authorization: MySecretKey,
+              'content-type': 'application/json',
+              'cache-control': 'no-cache'
+         },
+         form
+      }
+      const callback = (error, response, body)=>{
+          return mycallback(error, body);
+      }
+      request.post(option,callback);
+  }
+  const verifyPayment = (ref,mycallback) => {
+      const option = {
+          url : 'https://api.paystack.co/transaction/verify/' + encodeURIComponent(ref),
+          headers : {
+              authorization: MySecretKey,
+              'content-type': 'application/json',
+              'cache-control': 'no-cache'
+         }
+      }
+      const callback = (error, response, body)=>{
+          return mycallback(error, body);
+      }
+      request(option,callback);
+  }
+  return {initializePayment, verifyPayment};
+}
+module.exports = paystack
+//export default paystack

@@ -9,9 +9,9 @@ const upload = multer({storage});
 const postRoutes = express.Router();
 
 //Create Post
-postRoutes.post("/create",isLogin,upload.single("image"), createPostController)
+postRoutes.post("/create",isLogin,upload.single("image"), createPostController);
 //list all post for admin
-postRoutes.get("/list-post-admin",isLogin,isAdmin,fetchAllPostByAdmin)
+postRoutes.get("/list-post-admin",isLogin,isAdmin,fetchAllPostByAdmin);
 //list all post
 postRoutes.get("/list-post",isLogin,list)
 //fetch all post by user

@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer';
 import storage from '../config/cloudinary.js'
-import { 
+import paystack, { 
     adminBlockUserCtrl, 
     adminUnBlockUserCtrl, 
     blockUserController, 
@@ -9,7 +9,7 @@ import {
     deleteUsersController, 
     displayAllController, 
     forgetPasswordCtr, 
-    passwordSettingCtr, 
+    passwordSettingCtr,
     profileController, 
     profilePhotoUploadCtrl, 
     resetPasswordCtr, 
@@ -62,8 +62,11 @@ userRoutes.post("/forget-password", forgetPasswordCtr)
 userRoutes.post("/reset-password", resetPasswordCtr)
 //password setting
 userRoutes.put("/security", isLogin, passwordSettingCtr)
-//payment/subscriber
+//payment/subscriber with stripe
 userRoutes.post("/payment", isLogin,subscribeController)
+
+//paystack
+userRoutes.post("/paystack", paystack)
 
 
 export default userRoutes;

@@ -109,6 +109,20 @@ const userSchema = new mongoose.Schema({
               default: "pending",
             },
           },
+
+          amount: {
+            type: Number,
+            required: true,
+          },
+        
+          reference: {
+            type: String,
+            required: true,
+          },
+          status: {
+            type: String,
+            required: true
+          }
     },
     {
         timestamps:true,

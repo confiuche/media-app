@@ -236,7 +236,7 @@ export const updatePostController = async (req, res) => {
       });
     }
 
-    //check if the post belongs to the cureent user
+    //check if the post belongs to the current user
     const isPostBelongToCurrentUser =
       post.user.toString() === req.userAuth.toString();
     if (!isPostBelongToCurrentUser) {
